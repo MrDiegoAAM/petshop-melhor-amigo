@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Dog, Scissors, SprayCan } from 'lucide-react';
+import { Dog, SprayCan, Gamepad2, Package } from 'lucide-react';
+import type { Product } from '@shared/schema';
 
 interface ProductsSectionProps {
   onRequestInfo: (message: string) => void;
@@ -7,33 +10,53 @@ interface ProductsSectionProps {
 }
 
 export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectionProps) {
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'brinquedos' | 'higiene'>('all');
+
+  const { data: allProducts = [], isLoading } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+  });
+
+  const { data: categoryProducts = [] } = useQuery<Product[]>({
+    queryKey: ['/api/products', selectedCategory],
+    queryFn: () => fetch(`/api/products?category=${selectedCategory}`).then(res => res.json()),
+    enabled: selectedCategory !== 'all',
+  });
+
+  const displayProducts = selectedCategory === 'all' ? allProducts : categoryProducts;
+
   const handleRequestInfo = () => {
     onRequestInfo("Gostaria de solicitar informações sobre a ração premium? Poderia me fornecer mais detalhes?");
   };
 
+  const categories = [
+    { id: 'all', name: 'Todos os Produtos', icon: Package },
+    { id: 'brinquedos', name: 'Brinquedos Interativos', icon: Gamepad2 },
+    { id: 'higiene', name: 'Produtos de Higiene', icon: SprayCan },
+  ];
+
   return (
-    <section id="products" className="py-20">
+    <section id="products" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-800 mb-6">Nossos Produtos e Serviços</h2>
           <p className="text-lg text-gray-600">Tudo o que seu pet precisa em um só lugar</p>
         </div>
 
-        {/* Ração Premium */}
+        {/* Premium Food Section */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Alimentação</h3>
+          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Alimentação Premium</h3>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <img 
-              src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
-              alt="Ração premium para pets" 
+              src="/assets/racaopremium_1753978234488.png" 
+              alt="Ração Premium para pets" 
               className="rounded-xl shadow-lg w-full h-auto"
             />
             <div>
               <h4 className="text-xl font-semibold mb-4">Ração Premium</h4>
               <p className="text-gray-600 mb-6">
-                Oferecemos uma seleção de rações premium para cães e gatos. Essas rações são formuladas com 
-                ingredientes de alta qualidade, garantindo uma nutrição balanceada e adequada para o seu pet. 
-                Temos opções para diferentes idades, raças e necessidades específicas.
+                Nossa ração premium é formulada especialmente para oferecer a nutrição completa e balanceada 
+                que seu pet precisa. Rica em proteínas de alta qualidade, vitaminas e minerais essenciais, 
+                nossa ração garante saúde, vitalidade e sabor que os pets adoram.
               </p>
               <Button 
                 onClick={handleRequestInfo}
@@ -45,38 +68,36 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
           </div>
         </div>
 
-        {/* Serviços de Tosa */}
+        {/* Services Section */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Tosa Especializada</h3>
+          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Nossos Serviços</h3>
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="order-2 md:order-1">
-              <h4 className="text-xl font-semibold mb-4">Serviço de Tosa Especializada</h4>
+            <div>
+              <h4 className="text-xl font-semibold mb-4">Tosa Especializada</h4>
               <p className="text-gray-600 mb-6">
-                Proporcionamos serviços profissionais de tosa para cães de todas as raças. Nossos tosadores 
-                experientes e qualificados utilizam técnicas avançadas para garantir que seu pet tenha um visual 
-                impecável. Além de cortes personalizados, também realizamos limpeza de ouvidos e corte de unhas.
+                Oferecemos serviços de tosa especializados para cães de todas as raças e tamanhos. Nossos 
+                profissionais são capacitados para realizar cortes adequados para cada tipo de pelagem, 
+                respeitando as características de cada raça e as preferências dos tutores.
               </p>
               <Button 
                 onClick={onOpenBooking}
-                className="bg-pet-green text-white hover:bg-pet-green-dark"
+                className="bg-pet-green text-white hover:bg-pet-green-dark mr-4 mb-2"
               >
                 Agendar Serviço
               </Button>
             </div>
             <img 
-              src="https://images.unsplash.com/photo-1560743173-567a3b5658b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
-              alt="Serviço de tosa especializada" 
-              className="rounded-xl shadow-lg w-full h-auto order-1 md:order-2"
+              src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+              alt="Tosa especializada para pets" 
+              className="rounded-xl shadow-lg w-full h-auto"
             />
           </div>
         </div>
 
-        {/* Banho Relaxante */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Higiene e Limpeza</h3>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <img 
-              src="https://images.unsplash.com/photo-1544568100-847a948585b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+              src="/assets/banho relaxante_1753978208956.png" 
               alt="Banho relaxante para pets" 
               className="rounded-xl shadow-lg w-full h-auto"
             />
@@ -97,11 +118,84 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
           </div>
         </div>
 
-        {/* Additional Products */}
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-gray-50 p-8 rounded-xl">
+        {/* Products Navigation */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Nossos Produtos</h3>
+          
+          {/* Category Filter */}
+          <div className="flex justify-center mb-8">
+            <div className="flex flex-wrap gap-4">
+              {categories.map((category) => {
+                const Icon = category.icon;
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id as any)}
+                    className={`flex items-center px-6 py-3 rounded-lg font-medium transition-all ${
+                      selectedCategory === category.id
+                        ? 'bg-pet-green text-white shadow-md'
+                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 mr-2" />
+                    {category.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Products Grid */}
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pet-green mx-auto"></div>
+              <p className="mt-4 text-gray-600">Carregando produtos...</p>
+            </div>
+          ) : displayProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600">Nenhum produto encontrado nesta categoria.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {displayProducts.map((product) => (
+                <div key={product.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="aspect-square bg-gray-100 flex items-center justify-center">
+                    <img 
+                      src={product.imageUrl} 
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400';
+                      }}
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-lg mb-2 text-gray-800">{product.name}</h4>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-bold text-pet-green">R$ {product.price}</span>
+                      <Button 
+                        size="sm"
+                        onClick={() => onRequestInfo(`Gostaria de saber mais sobre o produto: ${product.name}. Poderia me fornecer mais informações?`)}
+                        className="bg-pet-green text-white hover:bg-pet-green-dark text-xs px-3 py-1"
+                      >
+                        Solicitar Info
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Category Overview */}
+        <div className="grid md:grid-cols-2 gap-8 mt-16">
+          <div className="bg-white p-8 rounded-xl shadow-md">
             <div className="text-center mb-6">
-              <Dog className="text-pet-green text-4xl mb-4 mx-auto" />
+              <Gamepad2 className="text-pet-green text-4xl mb-4 mx-auto" />
               <h4 className="text-xl font-semibold">Brinquedos Interativos</h4>
             </div>
             <p className="text-gray-600 text-center">
@@ -110,7 +204,7 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
             </p>
           </div>
           
-          <div className="bg-gray-50 p-8 rounded-xl">
+          <div className="bg-white p-8 rounded-xl shadow-md">
             <div className="text-center mb-6">
               <SprayCan className="text-pet-green text-4xl mb-4 mx-auto" />
               <h4 className="text-xl font-semibold">Produtos de Higiene</h4>

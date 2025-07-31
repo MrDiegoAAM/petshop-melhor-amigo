@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertBookingSchema, insertGalleryImageSchema, insertContactSchema } from "@shared/schema";
+import { insertBookingSchema, insertGalleryImageSchema, insertContactSchema, insertProductSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Admin authentication
@@ -77,6 +77,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(contacts);
     } catch (error) {
       res.status(500).json({ message: "Erro ao buscar contatos" });
+    }
+  });
+
+  // Products
+  app.get("/api/products", async (req, res) => {
+    try {
+      const { category } = req.query;
+      let products;
+      
+      if (category && typeof category === 'string') {
+        products = await storage.getProductsByCategory(category);
+      } else {
+        products = await storage.getProducts();
+      }
+      
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao buscar produtos" });
+    }
+  });
+
+  app.post("/api/products", async (req, res) => {
+    try {
+      const validatedData = insertProductSchema.parse(req.body);
+      const product = await storage.createProduct(validatedData);
+      res.json(product);
+    } catch (error) {
+      res.status(400).json({ message: "Dados inválidos para produto" });
+    }
+  });
+
+  app.delete("/api/products/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteProduct(id);
+      
+      if (deleted) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Produto não encontrado" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao deletar produto" });
     }
   });
 

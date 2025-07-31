@@ -8,7 +8,8 @@ import { ContactSection } from '@/components/contact-section';
 import { Footer } from '@/components/footer';
 import { ModalOverlay } from '@/components/modal-overlay';
 import { BookingModal } from '@/components/modals/booking-modal';
-import { AdminModal, AdminPanel } from '@/components/modals/admin-modal';
+import { AdminModal } from '@/components/modals/admin-modal';
+import { AdminPanelModal } from '@/components/modals/admin-panel-modal';
 import { ImageModal } from '@/components/modals/image-modal';
 import { useModal } from '@/hooks/use-modal';
 import { ImageModalData } from '@/lib/types';
@@ -43,7 +44,7 @@ export default function Home() {
       case 'admin':
         return <AdminModal onClose={closeModal} onLoginSuccess={handleAdminLoginSuccess} />;
       case 'adminPanel':
-        return <AdminPanel onClose={closeModal} />;
+        return <AdminPanelModal onClose={closeModal} />;
       case 'image':
         return <ImageModal onClose={closeModal} imageData={imageModalData} />;
       default:
