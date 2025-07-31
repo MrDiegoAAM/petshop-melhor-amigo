@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Calendar, ShieldQuestion, PawPrint } from 'lucide-react';
+import { Menu, X, Calendar, User, PawPrint } from 'lucide-react';
 
 interface NavigationProps {
   onOpenBooking: () => void;
@@ -66,7 +66,7 @@ export function Navigation({ onOpenBooking, onOpenAdmin }: NavigationProps) {
               onClick={onOpenAdmin}
               className="text-gray-600 hover:text-pet-green"
             >
-              <ShieldQuestion className="w-5 h-5" />
+              <User className="w-5 h-5" />
             </button>
           </div>
 
