@@ -16,7 +16,7 @@ export function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <PawPrint className="text-pet-green text-2xl" />
-              <span className="text-xl font-bold">Melhor Amigo</span>
+              <span className="text-xl font-bold"> </span>
             </div>
             <p className="text-gray-400">
               Cuidando do seu pet com amor e profissionalismo há mais de 10 anos.
@@ -80,15 +80,12 @@ export function Footer() {
               <a href="#" className="text-gray-400 hover:text-pet-green transition-colors">
                 <SiInstagram className="text-2xl" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-pet-green transition-colors">
-                <span className="text-2xl">📱</span>
-              </a>
             </div>
           </div>
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 Petshop Melhor Amigo. Todos os direitos reservados.</p>
+          <p>&copy; 2025 Petshop Melhor Amigo. Todos os direitos reservados para Diego Madeira.</p>
         </div>
       </div>
     </footer>

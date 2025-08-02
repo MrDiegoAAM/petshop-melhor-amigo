@@ -177,7 +177,7 @@ export function ContactSection({ prefilledMessage }: ContactSectionProps) {
                   <MapPin className="text-pet-green text-xl mr-4" />
                   <div>
                     <p className="font-semibold">Endereço</p>
-                    <p className="text-gray-600">Rua dos Pets, 123 - São Paulo, SP</p>
+                    <p className="text-gray-600">Rua dos Pets, 123 - Recife, PE</p>
                   </div>
                 </div>
                 
@@ -185,7 +185,7 @@ export function ContactSection({ prefilledMessage }: ContactSectionProps) {
                   <Phone className="text-pet-green text-xl mr-4" />
                   <div>
                     <p className="font-semibold">Telefone</p>
-                    <p className="text-gray-600">(11) 3456-7890</p>
+                    <p className="text-gray-600">(81) 99755-2530</p>
                   </div>
                 </div>
                 

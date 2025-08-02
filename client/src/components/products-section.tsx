@@ -38,16 +38,16 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
     <section id="products" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-6">Nossos Produtos e Serviços</h2>
+          <h2 className="text-4xl font-bold text-gray-800 mb-6">Produtos e Serviços Diferenciados</h2>
           <p className="text-lg text-gray-600">Tudo o que seu pet precisa em um só lugar</p>
         </div>
 
         {/* Premium Food Section */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Alimentação Premium</h3>
+        <div id="alimentacao" className="mb-16">
+          <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Alimentação de Qualidade</h3>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <img 
-              src="/assets/racaopremium_1753978234488.png" 
+              src="/racaopremium.png" 
               alt="Ração Premium para pets" 
               className="rounded-xl shadow-lg w-full h-auto"
             />
@@ -87,7 +87,7 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
               </Button>
             </div>
             <img 
-              src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
+              src="/tosa.png" 
               alt="Tosa especializada para pets" 
               className="rounded-xl shadow-lg w-full h-auto"
             />
@@ -97,7 +97,7 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
         <div className="mb-16">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <img 
-              src="/assets/banho relaxante_1753978208956.png" 
+              src="/banhorelaxante_1753978208956.png" 
               alt="Banho relaxante para pets" 
               className="rounded-xl shadow-lg w-full h-auto"
             />
@@ -119,7 +119,7 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
         </div>
 
         {/* Products Navigation */}
-        <div className="mb-12">
+        <div id="nossos-produtos" className="mb-12">
           <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">Nossos Produtos</h3>
           
           {/* Category Filter */}
@@ -157,7 +157,7 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
               <p className="text-gray-600">Nenhum produto encontrado nesta categoria.</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {displayProducts.map((product) => (
                 <div key={product.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="aspect-square bg-gray-100 flex items-center justify-center">
@@ -167,7 +167,7 @@ export function ProductsSection({ onRequestInfo, onOpenBooking }: ProductsSectio
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400';
+                        target.src = '/attached_assets/banho relaxante_1753978208956.png';
                       }}
                     />
                   </div>

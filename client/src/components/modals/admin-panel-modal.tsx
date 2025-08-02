@@ -128,6 +128,46 @@ export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
     },
   });
 
+  const deleteImageMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest('DELETE', `/api/gallery/${id}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Imagem removida!",
+        description: "A imagem foi removida da galeria com sucesso.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/gallery'] });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao remover imagem",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteBookingMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest('DELETE', `/api/bookings/${id}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Agendamento removido!",
+        description: "O agendamento foi removido com sucesso.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/bookings'] });
+    },
+    onError: () => {
+      toast({
+        title: "Erro ao remover agendamento",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onGallerySubmit = (data: GalleryFormData) => {
     addImageMutation.mutate(data);
   };
@@ -139,6 +179,18 @@ export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
   const handleDeleteProduct = (id: string) => {
     if (confirm('Tem certeza que deseja remover este produto?')) {
       deleteProductMutation.mutate(id);
+    }
+  };
+
+  const handleDeleteImage = (id: string) => {
+    if (confirm('Tem certeza que deseja remover esta imagem da galeria?')) {
+      deleteImageMutation.mutate(id);
+    }
+  };
+
+  const handleDeleteBooking = (id: string) => {
+    if (confirm('Tem certeza que deseja remover este agendamento?')) {
+      deleteBookingMutation.mutate(id);
     }
   };
 
@@ -185,22 +237,38 @@ export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
                 <div className="space-y-3">
                   {bookings.map((booking) => (
                     <div key={booking.id} className="bg-gray-50 p-4 rounded-lg">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <div>
-                          <strong>{booking.name}</strong>
-                          <p className="text-sm text-gray-600">{booking.phone}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 flex-1">
+                          <div>
+                            <strong>{booking.name}</strong>
+                            <p className="text-sm text-gray-600">{booking.phone}</p>
+                          </div>
+                          <div>
+                            <p className="font-medium">
+                              {booking.service === 'tosa' ? 'Tosa Especializada' : 'Banho Relaxante'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm">{new Date(booking.date).toLocaleDateString('pt-BR')}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{booking.time}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium">
-                            {booking.service === 'tosa' ? 'Tosa Especializada' : 'Banho Relaxante'}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm">{new Date(booking.date).toLocaleDateString('pt-BR')}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">{booking.time}</p>
-                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleDeleteBooking(booking.id);
+                          }}
+                          disabled={deleteBookingMutation.isPending}
+                          className="ml-4"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+
                       </div>
                     </div>
                   ))}
@@ -289,13 +357,27 @@ export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {galleryImages.map((image) => (
-                      <div key={image.id} className="bg-gray-50 p-2 rounded-lg">
+                      <div key={image.id} className="bg-gray-50 p-2 rounded-lg relative group">
                         <img 
                           src={image.url} 
                           alt={image.description}
                           className="w-full h-32 object-cover rounded mb-2"
                         />
                         <p className="text-sm text-gray-600 truncate">{image.description}</p>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-1 right-1 h-8 w-8 p-0"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteImage(image.id);
+                          }}
+                          disabled={deleteImageMutation.isPending}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+
                       </div>
                     ))}
                   </div>
@@ -422,7 +504,7 @@ export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
                               className="w-16 h-16 object-cover rounded"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
-                                target.src = 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100';
+                                target.src = '/attached_assets/banhorelaxante_1753978208956.png';
                               }}
                             />
                             <div>
@@ -439,11 +521,16 @@ export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => handleDeleteProduct(product.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              handleDeleteProduct(product.id);
+                            }}
                             disabled={deleteProductMutation.isPending}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
+
                         </div>
                       </div>
                     ))}

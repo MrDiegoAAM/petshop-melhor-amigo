@@ -35,7 +35,13 @@ export function Navigation({ onOpenBooking, onOpenAdmin }: NavigationProps) {
               Início
             </button>
             <button 
-              onClick={() => scrollToSection('products')}
+              onClick={() => scrollToSection('about')}
+              className="text-gray-700 hover:text-pet-green transition-colors"
+            >
+              Quem Somos
+            </button>
+            <button 
+              onClick={() => scrollToSection('nossos-produtos')}
               className="text-gray-700 hover:text-pet-green transition-colors"
             >
               Produtos
@@ -89,7 +95,13 @@ export function Navigation({ onOpenBooking, onOpenAdmin }: NavigationProps) {
               Início
             </button>
             <button 
-              onClick={() => scrollToSection('products')}
+              onClick={() => scrollToSection('about')}
+              className="block w-full text-left px-3 py-2 text-gray-700"
+            >
+              Quem Somos
+            </button>
+            <button 
+              onClick={() => scrollToSection('nossos-produtos')}
               className="block w-full text-left px-3 py-2 text-gray-700"
             >
               Produtos

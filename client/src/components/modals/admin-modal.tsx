@@ -73,7 +73,7 @@ export function AdminModal({ onClose, onLoginSuccess }: AdminModalProps) {
                 <FormItem>
                   <FormLabel>Usuário</FormLabel>
                   <FormControl>
-                    <Input placeholder="admin" {...field} />
+                    <Input placeholder="Digite 'admin'" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -87,7 +87,7 @@ export function AdminModal({ onClose, onLoginSuccess }: AdminModalProps) {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="infinity" {...field} />
+                    <Input type="password" placeholder="Digite 'infinity'" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
