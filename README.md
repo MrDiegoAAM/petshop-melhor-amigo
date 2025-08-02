@@ -1,12 +1,12 @@
-# Petshop "Melhor Amigo" - Site de Serviços para Pets
-
-## 🚀 Guia Rápido para Marinheiros de Primeira Viagem
+# Petshop "Melhor Amigo" - Site de Serviços para Pets - Projeto Infinity School (Nível Difícil)
+⚠️Coloquei um vídeo demonstrativo na pasta "Vídeo", caso queria visualizar o projeto antes de baixar.⚠️
+Guia Rápido para Marinheiros de Primeira Viagem
 
 **Primeira vez executando o projeto? Siga estes passos simples:**
 
 ### Passo 1: Instalar Dependências
 ```bash
-install.bat
+install.bat (Sim, criei um script para preparar o ambiente)
 ```
 Este script irá:
 - Verificar se Node.js está instalado
@@ -16,7 +16,7 @@ Este script irá:
 
 ### Passo 2: Iniciar os Serviços
 ```bash
-run.bat
+run.bat (Usei esse script para levantar o PostGreSQL, depois simplifiquei o projeto para usar o SQLite)
 ```
 Este script irá:
 - Verificar se a porta 5001 está disponível
