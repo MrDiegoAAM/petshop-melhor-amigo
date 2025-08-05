@@ -1,7 +1,19 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Global auth state handler
+let authStateHandler: ((isAuthenticated: boolean) => void) | null = null;
+
+export function setAuthStateHandler(handler: (isAuthenticated: boolean) => void) {
+  authStateHandler = handler;
+}
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
+    // Handle authentication errors globally
+    if (res.status === 401 && authStateHandler) {
+      authStateHandler(false);
+    }
+    
     const text = (await res.text()) || res.statusText;
     throw new Error(`${res.status}: ${text}`);
   }
@@ -33,8 +45,15 @@ export const getQueryFn: <T>(options: {
       credentials: "include",
     });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+    if (res.status === 401) {
+      // Handle authentication errors globally
+      if (authStateHandler) {
+        authStateHandler(false);
+      }
+      
+      if (unauthorizedBehavior === "returnNull") {
+        return null;
+      }
     }
 
     await throwIfResNotOk(res);

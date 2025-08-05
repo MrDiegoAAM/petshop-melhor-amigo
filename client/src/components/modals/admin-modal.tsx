@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/use-auth';
 import { apiRequest } from '@/lib/queryClient';
 import { X } from 'lucide-react';
 
@@ -20,6 +21,7 @@ interface LoginFormData {
 
 export function AdminModal({ onClose, onLoginSuccess }: AdminModalProps) {
   const { toast } = useToast();
+  const { login, isLoggingIn } = useAuth();
 
   const form = useForm<LoginFormData>({
     defaultValues: {
@@ -28,28 +30,21 @@ export function AdminModal({ onClose, onLoginSuccess }: AdminModalProps) {
     },
   });
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: LoginFormData) => {
-      return apiRequest('POST', '/api/admin/login', data);
-    },
-    onSuccess: () => {
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      await login(data);
       toast({
         title: "Login realizado com sucesso!",
         description: "Bem-vindo ao painel administrativo.",
       });
       onLoginSuccess();
-    },
-    onError: () => {
+    } catch (error) {
       toast({
         title: "Credenciais inválidas",
         description: "Verifique seu usuário e senha.",
         variant: "destructive",
       });
-    },
-  });
-
-  const onSubmit = (data: LoginFormData) => {
-    loginMutation.mutate(data);
+    }
   };
 
   return (
@@ -97,9 +92,9 @@ export function AdminModal({ onClose, onLoginSuccess }: AdminModalProps) {
             <Button 
               type="submit" 
               className="w-full bg-pet-green text-white hover:bg-pet-green-dark"
-              disabled={loginMutation.isPending}
+              disabled={isLoggingIn}
             >
-              {loginMutation.isPending ? 'Entrando...' : 'Entrar'}
+              {isLoggingIn ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
         </Form>

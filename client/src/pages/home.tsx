@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigation } from '@/components/navigation';
 import { HeroSection } from '@/components/hero-section';
 import { AboutSection } from '@/components/about-section';
@@ -12,12 +12,21 @@ import { AdminModal } from '@/components/modals/admin-modal';
 import { AdminPanelModal } from '@/components/modals/admin-panel-modal';
 import { ImageModal } from '@/components/modals/image-modal';
 import { useModal } from '@/hooks/use-modal';
+import { useAuth } from '@/hooks/use-auth';
 import { ImageModalData } from '@/lib/types';
 
 export default function Home() {
   const { modalState, openModal, closeModal, switchModal, isModalOpen } = useModal();
+  const { isAuthenticated } = useAuth();
   const [imageModalData, setImageModalData] = useState<ImageModalData>({ src: '', title: '' });
   const [prefilledMessage, setPrefilledMessage] = useState<string>('');
+
+  // Close admin panel modal when user is not authenticated
+  useEffect(() => {
+    if (!isAuthenticated && modalState.activeModal === 'adminPanel') {
+      closeModal();
+    }
+  }, [isAuthenticated, modalState.activeModal, closeModal]);
 
   const handleRequestInfo = (message: string) => {
     setPrefilledMessage(message);
@@ -35,6 +44,14 @@ export default function Home() {
 
   const handleAdminLoginSuccess = () => {
     switchModal('adminPanel');
+  };
+
+  const handleOpenAdmin = () => {
+    if (isAuthenticated) {
+      openModal('adminPanel');
+    } else {
+      openModal('admin');
+    }
   };
 
   const renderModal = () => {
@@ -56,7 +73,8 @@ export default function Home() {
     <div className="min-h-screen">
       <Navigation 
         onOpenBooking={() => openModal('booking')}
-        onOpenAdmin={() => openModal('admin')}
+        onOpenAdmin={handleOpenAdmin}
+        isAuthenticated={isAuthenticated}
       />
       
       <HeroSection />

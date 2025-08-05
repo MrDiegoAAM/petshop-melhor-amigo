@@ -10,8 +10,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/use-auth';
 import { apiRequest } from '@/lib/queryClient';
-import { X, Plus, Trash2, Calendar, MessageSquare, Image, Package } from 'lucide-react';
+import { X, Plus, Trash2, Calendar, MessageSquare, Image, Package, LogOut } from 'lucide-react';
 import type { z } from 'zod';
 import type { GalleryImage, Contact, Booking, Product } from '@shared/schema';
 
@@ -24,6 +25,7 @@ interface AdminPanelModalProps {
 
 export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
   const { toast } = useToast();
+  const { logout, isLoggingOut, user } = useAuth();
   const queryClient = useQueryClient();
 
   // Fetch data
@@ -194,14 +196,46 @@ export function AdminPanelModal({ onClose }: AdminPanelModalProps) {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logout realizado com sucesso!",
+        description: "Você foi desconectado do painel administrativo.",
+      });
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Erro ao fazer logout",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
       <div className="p-6 border-b">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-800">Painel Administrativo</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-6 h-6" />
-          </button>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">Painel Administrativo</h2>
+            {user && <p className="text-sm text-gray-600">Logado como: {user.username}</p>}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              {isLoggingOut ? 'Saindo...' : 'Sair'}
+            </Button>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       </div>
       

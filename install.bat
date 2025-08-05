@@ -4,12 +4,70 @@ echo Instalando dependencias do Petshop "Melhor Amigo"
 echo ===================================================
 echo.
 
+echo Verificando permissoes administrativas...
+net session >nul 2>&1
+if %ERRORLEVEL% neq 0 (
+    echo [AVISO] Este script pode precisar de permissoes administrativas para instalar dependencias globais.
+    echo.
+    echo Voce esta executando como administrador? (s/n)
+    set /p admin_choice="Digite sua escolha: "
+    if /i "%admin_choice%"=="n" (
+        echo.
+        echo COMO EXECUTAR COMO ADMINISTRADOR:
+        echo 1. Feche este terminal
+        echo 2. Clique com botao direito no PowerShell ou Prompt de Comando
+        echo 3. Selecione "Executar como administrador"
+        echo 4. Navegue ate este diretorio: cd "%~dp0"
+        echo 5. Execute novamente: install.bat
+        echo.
+        echo Deseja continuar mesmo assim? (s/n)
+        set /p continue_choice="Digite sua escolha: "
+        if /i "%continue_choice%"=="n" (
+            echo Instalacao cancelada. Execute como administrador para melhor experiencia.
+            pause
+            exit /b 1
+        )
+    )
+    echo.
+    echo [INFO] Continuando instalacao... (algumas dependencias globais podem falhar)
+) else (
+    echo [OK] Executando com permissoes administrativas.
+)
+echo.
+
 echo Verificando se o Node.js esta instalado...
 where node >nul 2>nul
 if %ERRORLEVEL% neq 0 (
     echo [ERRO] Node.js nao encontrado! Por favor, instale o Node.js antes de continuar.
-    echo Voce pode baixar o Node.js em: https://nodejs.org/
     echo.
+    echo INSTRUCOES PARA INSTALAR O NODE.JS:
+    echo 1. Acesse: https://nodejs.org/
+    echo 2. Baixe a versao LTS (recomendada)
+    echo 3. Execute o instalador e siga as instrucoes
+    echo 4. Reinicie o terminal apos a instalacao
+    echo 5. Execute novamente este arquivo: install.bat
+    echo.
+    echo ALTERNATIVA - Usar Chocolatey (se instalado):
+    echo choco install nodejs
+    echo.
+    echo ALTERNATIVA - Usar winget (Windows 10/11):
+    echo winget install OpenJS.NodeJS
+    echo.
+    echo Deseja tentar instalar automaticamente via winget? (s/n)
+    set /p choice="Digite sua escolha: "
+    if /i "%choice%"=="s" (
+        echo Tentando instalar Node.js via winget...
+        winget install OpenJS.NodeJS
+        if %ERRORLEVEL% equ 0 (
+            echo.
+            echo Node.js instalado com sucesso! Reinicie o terminal e execute install.bat novamente.
+            echo.
+        ) else (
+            echo.
+            echo Falha na instalacao automatica. Por favor, instale manualmente.
+            echo.
+        )
+    )
     pause
     exit /b 1
 )

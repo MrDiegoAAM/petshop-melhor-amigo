@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { getStorage } from "./storage";
 import { insertBookingSchema, insertGalleryImageSchema, insertContactSchema, insertProductSchema } from "@shared/schema";
+import { requireAuth } from "./middleware/auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Admin authentication
@@ -12,6 +13,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUserByUsername(username);
       
       if (user && user.password === password) {
+        // Create session
+        req.session.userId = user.id;
+        req.session.username = user.username;
+        req.session.isAuthenticated = true;
+        
         res.json({ success: true, user: { id: user.id, username: user.username } });
       } else {
         res.status(401).json({ message: "Credenciais inválidas" });
@@ -19,6 +25,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Erro interno do servidor" });
     }
+  });
+
+  // Check authentication status
+  app.get("/api/admin/status", (req, res) => {
+    if (req.session && req.session.isAuthenticated) {
+      res.json({ 
+        isAuthenticated: true, 
+        user: { 
+          id: req.session.userId, 
+          username: req.session.username 
+        } 
+      });
+    } else {
+      res.json({ isAuthenticated: false });
+    }
+  });
+
+  // Logout
+  app.post("/api/admin/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        res.status(500).json({ message: "Erro ao fazer logout" });
+      } else {
+        res.json({ success: true, message: "Logout realizado com sucesso" });
+      }
+    });
   });
 
   // Bookings
@@ -33,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/bookings", async (req, res) => {
+  app.get("/api/bookings", requireAuth, async (req, res) => {
     try {
       const storage = await getStorage();
       const bookings = await storage.getBookings();
@@ -43,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/bookings/:id", async (req, res) => {
+  app.delete("/api/bookings/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -76,7 +108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/gallery", async (req, res) => {
+  app.post("/api/gallery", requireAuth, async (req, res) => {
     try {
       const validatedData = insertGalleryImageSchema.parse(req.body);
       const storage = await getStorage();
@@ -87,7 +119,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/gallery/:id", async (req, res) => {
+  app.delete("/api/gallery/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -121,7 +153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/contacts", async (req, res) => {
+  app.get("/api/contacts", requireAuth, async (req, res) => {
     try {
       const storage = await getStorage();
       const contacts = await storage.getContacts();
@@ -150,7 +182,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/products", async (req, res) => {
+  app.post("/api/products", requireAuth, async (req, res) => {
     try {
       const validatedData = insertProductSchema.parse(req.body);
       const storage = await getStorage();
@@ -161,7 +193,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/products/:id", async (req, res) => {
+  app.delete("/api/products/:id", requireAuth, async (req, res) => {
     try {
       const { id } = req.params;
       const storage = await getStorage();

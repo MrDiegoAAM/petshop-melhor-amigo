@@ -5,9 +5,10 @@ import { Menu, X, Calendar, User, PawPrint } from 'lucide-react';
 interface NavigationProps {
   onOpenBooking: () => void;
   onOpenAdmin: () => void;
+  isAuthenticated?: boolean;
 }
 
-export function Navigation({ onOpenBooking, onOpenAdmin }: NavigationProps) {
+export function Navigation({ onOpenBooking, onOpenAdmin, isAuthenticated = false }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
@@ -72,7 +73,15 @@ export function Navigation({ onOpenBooking, onOpenAdmin }: NavigationProps) {
               onClick={onOpenAdmin}
               className="text-gray-600 hover:text-pet-green"
             >
-              <User className="w-5 h-5" />
+              {isAuthenticated ? (
+                <img 
+                  src="/logado.jpg" 
+                  alt="Usuário logado" 
+                  className="w-6 h-6 rounded-full object-cover"
+                />
+              ) : (
+                <User className="w-5 h-5" />
+              )}
             </button>
           </div>
 
