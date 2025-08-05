@@ -1,7 +1,9 @@
 # Petshop "Melhor Amigo" - Site de Serviços para Pets - Projeto Infinity School (Nível Difícil)
 
 ⚠️Vídeo demonstrativo em https://youtu.be/B6Fde4X5Tgo ⚠️
-Guia Rápido para Marinheiros de Primeira Viagem
+
+
+Guia Rápido para Marinheiros de Rodar o Projeto
 
 **Primeira vez executando o projeto? Siga estes passos simples:**
 
