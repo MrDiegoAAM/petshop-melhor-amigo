@@ -1,12 +1,12 @@
-# Petshop "Melhor Amigo" - Site de Serviços para Pets
-
-## 🚀 Guia Rápido para Marinheiros de Primeira Viagem
+# Petshop "Melhor Amigo" - Site de Serviços para Pets - Projeto Infinity School (Nível Difícil)
+⚠️Vídeo demonstrativo em https://youtu.be/B6Fde4X5Tgo ⚠️
+Guia Rápido para Marinheiros de Primeira Viagem
 
 **Primeira vez executando o projeto? Siga estes passos simples:**
 
 ### Passo 1: Instalar Dependências
 ```bash
-install.bat
+install.bat (Sim, criei um script para preparar o ambiente)
 ```
 **⚠️ IMPORTANTE**: Execute o terminal como **administrador** para melhor experiência.
 
@@ -32,7 +32,7 @@ PowerShell -ExecutionPolicy Bypass -File .\run.ps1
 
 **Opção Alternativa (CMD):**
 ```bash
-run.bat
+run.bat (Usei esse script para levantar o PostGreSQL, depois simplifiquei o projeto para usar o SQLite)
 ```
 
 O script PowerShell (`run.ps1`) é mais robusto e irá:
